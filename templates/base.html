@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>To-Do App</title>
+    <meta charset="UTF-8">
+    <title>Flask To-Do App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        a, button {
+            margin-right: 8px;
+        }
+        form {
+            display: inline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Task Manager</h1>
-    {% block content %}{% endblock %}
+
+<h1>Task Manager</h1>
+<hr>
+
+{% block content %}{% endblock %}
+
 </body>
 </html>

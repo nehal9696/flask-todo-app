@@ -106,6 +106,65 @@ def add_task_ui():
 
     return render_template("add_task.html")
 
+@app.route("/edit/<int:task_id>", methods=["GET", "POST"])
+def edit_task_ui(task_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+        try:
+            cursor.execute("""
+                UPDATE tasks
+                SET title = ?, description = ?, due_date = ?, status = ?
+                WHERE id = ?
+            """, (
+                request.form["title"],
+                request.form.get("description"),
+                request.form.get("due_date"),
+                request.form.get("status"),
+                task_id
+            ))
+
+            conn.commit()
+            conn.close()
+
+            logger.info(f"Task {task_id} updated via UI")
+            return redirect(url_for("task_list"))
+
+        except Exception as e:
+            conn.close()
+            logger.error(f"UI update failed for task {task_id}: {e}")
+            return "Error updating task", 500
+
+    # GET request → load task
+    cursor.execute("SELECT * FROM tasks WHERE id = ?", (task_id,))
+    task = cursor.fetchone()
+    conn.close()
+
+    if not task:
+        return "Task not found", 404
+
+    return render_template("edit_task.html", task=task)
+
+
+@app.route("/delete/<int:task_id>", methods=["POST"])
+def delete_task_ui(task_id):
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+        conn.commit()
+        conn.close()
+
+        logger.info(f"Task {task_id} deleted via UI")
+        return redirect(url_for("task_list"))
+
+    except Exception as e:
+        logger.error(f"UI delete failed for task {task_id}: {e}")
+        return "Error deleting task", 500
+
+
 
 
 if __name__ == "__main__":

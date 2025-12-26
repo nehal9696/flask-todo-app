@@ -1,9 +1,23 @@
 {% extends "base.html" %}
+
 {% block content %}
-<form method="post" action="/add">
-    <input name="title" placeholder="Title" required>
-    <input name="description" placeholder="Description">
-    <input name="due_date" placeholder="YYYY-MM-DD">
-    <button type="submit">Save</button>
+
+<h2>Add New Task</h2>
+
+<form method="post">
+    <label>Title:</label><br>
+    <input type="text" name="title" required><br><br>
+
+    <label>Description:</label><br>
+    <input type="text" name="description"><br><br>
+
+    <label>Due Date:</label><br>
+    <input type="date" name="due_date"><br><br>
+
+    <button type="submit">Save Task</button>
 </form>
+
+<br>
+<a href="/">Back to Task List</a>
+
 {% endblock %}
