@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<a href="/add">➕ Add New Task</a>
+<a href="{{ url_for('add_task_ui') }}">➕ Add New Task</a>
 
 <br><br>
 
@@ -27,9 +27,11 @@
             <td>{{ task.due_date or "-" }}</td>
             <td>{{ task.status }}</td>
             <td>
-                <a href="/edit/{{ task.id }}">Edit</a>
+                <!-- EDIT (GET) -->
+                <a href="{{ url_for('edit_task_ui', task_id=task.id) }}">Edit</a>
 
-                <form method="post" action="/delete/{{ task.id }}">
+                <!-- DELETE (POST) -->
+                <form method="post" action="{{ url_for('delete_task_ui', task_id=task.id) }}" style="display:inline;">
                     <button type="submit">Delete</button>
                 </form>
             </td>

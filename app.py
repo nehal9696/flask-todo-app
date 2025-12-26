@@ -106,37 +106,86 @@ def add_task_ui():
 
     return render_template("add_task.html")
 
+@app.route("/api/tasks/<int:task_id>", methods=["PUT"])
+def update_task_api(task_id):
+    try:
+        data = request.get_json(force=True)
+
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            UPDATE tasks
+            SET title = ?, description = ?, due_date = ?, status = ?
+            WHERE id = ?
+        """, (
+            data.get("title"),
+            data.get("description"),
+            data.get("due_date"),
+            data.get("status"),
+            task_id
+        ))
+
+        if cursor.rowcount == 0:
+            conn.close()
+            return jsonify({"error": "Task not found"}), 404
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({"message": "Task updated successfully"}), 200
+
+    except Exception as e:
+        logger.error(f"API update failed: {e}")
+        return jsonify({"error": "Internal server error"}), 500
+
+
+
+
+@app.route("/api/tasks/<int:task_id>", methods=["DELETE"])
+def delete_task_api(task_id):
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+
+        if cursor.rowcount == 0:
+            conn.close()
+            return jsonify({"error": "Task not found"}), 404
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({"message": "Task deleted successfully"}), 200
+
+    except Exception as e:
+        logger.error(f"API delete failed: {e}")
+        return jsonify({"error": "Internal server error"}), 500
+
+
 @app.route("/edit/<int:task_id>", methods=["GET", "POST"])
 def edit_task_ui(task_id):
     conn = get_connection()
     cursor = conn.cursor()
 
     if request.method == "POST":
-        try:
-            cursor.execute("""
-                UPDATE tasks
-                SET title = ?, description = ?, due_date = ?, status = ?
-                WHERE id = ?
-            """, (
-                request.form["title"],
-                request.form.get("description"),
-                request.form.get("due_date"),
-                request.form.get("status"),
-                task_id
-            ))
+        cursor.execute("""
+            UPDATE tasks
+            SET title = ?, description = ?, due_date = ?, status = ?
+            WHERE id = ?
+        """, (
+            request.form["title"],
+            request.form.get("description"),
+            request.form.get("due_date"),
+            request.form.get("status"),
+            task_id
+        ))
 
-            conn.commit()
-            conn.close()
+        conn.commit()
+        conn.close()
+        return redirect(url_for("task_list"))
 
-            logger.info(f"Task {task_id} updated via UI")
-            return redirect(url_for("task_list"))
-
-        except Exception as e:
-            conn.close()
-            logger.error(f"UI update failed for task {task_id}: {e}")
-            return "Error updating task", 500
-
-    # GET request → load task
     cursor.execute("SELECT * FROM tasks WHERE id = ?", (task_id,))
     task = cursor.fetchone()
     conn.close()
@@ -149,22 +198,14 @@ def edit_task_ui(task_id):
 
 @app.route("/delete/<int:task_id>", methods=["POST"])
 def delete_task_ui(task_id):
-    try:
-        conn = get_connection()
-        cursor = conn.cursor()
+    conn = get_connection()
+    cursor = conn.cursor()
 
-        cursor.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
-        conn.commit()
-        conn.close()
+    cursor.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+    conn.commit()
+    conn.close()
 
-        logger.info(f"Task {task_id} deleted via UI")
-        return redirect(url_for("task_list"))
-
-    except Exception as e:
-        logger.error(f"UI delete failed for task {task_id}: {e}")
-        return "Error deleting task", 500
-
-
+    return redirect(url_for("task_list"))
 
 
 if __name__ == "__main__":
