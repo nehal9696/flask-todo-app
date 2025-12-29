@@ -31,22 +31,26 @@ This project is designed as a clean, review-ready implementation aligned with co
 
 ## Project Structure
 
+The project follows a clean and modular structure to separate concerns such as routing, database access, configuration, templates, and testing.
+
+```text
 flask-todo-app/
 │
-├── app.py
-├── config.py
-├── db.py
-├── logger.py
-├── requirements.txt
-├── README.md
+├── app.py                # Main Flask application with UI and API routes
+├── config.py             # Application configuration
+├── db.py                 # Database connection and initialization logic
+├── logger.py             # Centralized logging configuration
+├── requirements.txt      # Project dependencies
+├── README.md             # Project documentation
 │
-├── templates/
-│ ├── base.html
-│ ├── tasks.html
-│ └── add_task.html
+├── templates/            # HTML templates for UI
+│   ├── base.html         # Base layout template
+│   ├── tasks.html        # Task list view
+│   ├── add_task.html     # Add task form
+│   └── edit_task.html    # Edit task form
 │
-└── tests/
-└── test_tasks_api.py
+└── tests/                # Automated tests
+    └── test_tasks_api.py # API CRUD tests using pytest
 
 
 ---
@@ -62,3 +66,114 @@ flask-todo-app/
 git clone https://github.com/<your-username>/flask-todo-app.git
 cd flask-todo-app
 
+---
+
+## API Documentation
+
+The application exposes RESTful APIs for managing tasks.  
+All APIs accept and return JSON data.
+
+### Base URL
+http://127.0.0.1:5000
+
+
+---
+
+### Create a Task
+
+**Endpoint**
+
+POST /api/tasks
+
+**Description**  
+Creates a new task in the system.
+
+**Request Body**
+```json
+{
+  "title": "Sample Task",
+  "description": "Optional description",
+  "due_date": "2025-01-01",
+  "status": "PENDING"
+}
+
+**Response** (201 Created)
+
+{
+  "message": "Task created successfully"
+}
+
+**Error Responses**
+
+400 Bad Request – Title is missing
+
+500 Internal Server Error – Server failure
+
+### Retrieve All Tasks
+
+**Endpoint**
+
+GET /api/tasks
+
+**Description**
+Fetches all tasks stored in the database.
+
+**Response** (200 OK)
+
+[
+  {
+    "id": 1,
+    "title": "Sample Task",
+    "description": "Optional description",
+    "due_date": "2025-01-01",
+    "status": "PENDING"
+  }
+]
+
+### Update a Task
+
+**Endpoint**
+
+PUT /api/tasks/{id}
+
+**Description**
+Updates an existing task by its ID.
+
+**Request Body**
+{
+  "title": "Updated Task",
+  "description": "Updated description",
+  "due_date": "2025-01-05",
+  "status": "COMPLETED"
+}
+
+**Response** (200 OK)
+{
+  "message": "Task updated successfully"
+}
+
+**Error Responses**
+
+404 Not Found – Task does not exist
+
+500 Internal Server Error – Server failure
+
+### Delete a Task
+
+**Endpoint**
+
+DELETE /api/tasks/{id}
+
+**Description**
+Deletes a task by its ID.
+
+**Response** (200 OK)
+{
+  "message": "Task deleted successfully"
+}
+
+**Error Responses**
+
+404 Not Found – Task does not exist
+
+500 Internal Server Error – Server failure
