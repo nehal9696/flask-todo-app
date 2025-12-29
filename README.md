@@ -1,6 +1,6 @@
 # Flask To-Do Application
 
-A lightweight web application built using **Flask** to manage a To-Do list.  
+A lightweight web application built using **Flask** to manage a To-Do list.
 The application provides **RESTful APIs for full CRUD operations**, uses **server-side templates** for the user interface, and stores data in **SQLite using explicit SQL queries (no ORM)**.
 
 This project is designed as a clean, review-ready implementation aligned with common backend engineering best practices and the given evaluation criteria.
@@ -51,7 +51,7 @@ flask-todo-app/
 │
 └── tests/                # Automated tests
     └── test_tasks_api.py # API CRUD tests using pytest
-
+```
 
 ---
 
@@ -62,20 +62,35 @@ flask-todo-app/
 - Git
 
 ### Clone the Repository
+
 ```bash
-git clone https://github.com/<your-username>/flask-todo-app.git
+git clone https://github.com/nehal9696/flask-todo-app.git
 cd flask-todo-app
+```
+
+### Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Run the application
+
+```bash
+# Option 1 - run module directly
+python app.py
+
+# Option 2 - using flask CLI
+flask run
+```
 
 ---
 
 ## API Documentation
 
-The application exposes RESTful APIs for managing tasks.  
-All APIs accept and return JSON data.
+The application exposes RESTful APIs for managing tasks. All APIs accept and return JSON data.
 
-### Base URL
-http://127.0.0.1:5000
-
+**Base URL:** http://127.0.0.1:5000
 
 ---
 
@@ -85,10 +100,12 @@ http://127.0.0.1:5000
 
 POST /api/tasks
 
-**Description**  
+**Description**
+
 Creates a new task in the system.
 
 **Request Body**
+
 ```json
 {
   "title": "Sample Task",
@@ -96,18 +113,22 @@ Creates a new task in the system.
   "due_date": "2025-01-01",
   "status": "PENDING"
 }
+```
 
 **Response** (201 Created)
 
+```json
 {
   "message": "Task created successfully"
 }
+```
 
 **Error Responses**
 
-400 Bad Request – Title is missing
+- 400 Bad Request – Title is missing
+- 500 Internal Server Error – Server failure
 
-500 Internal Server Error – Server failure
+---
 
 ### Retrieve All Tasks
 
@@ -116,10 +137,12 @@ Creates a new task in the system.
 GET /api/tasks
 
 **Description**
+
 Fetches all tasks stored in the database.
 
 **Response** (200 OK)
 
+```json
 [
   {
     "id": 1,
@@ -129,6 +152,9 @@ Fetches all tasks stored in the database.
     "status": "PENDING"
   }
 ]
+```
+
+---
 
 ### Update a Task
 
@@ -137,26 +163,34 @@ Fetches all tasks stored in the database.
 PUT /api/tasks/{id}
 
 **Description**
+
 Updates an existing task by its ID.
 
 **Request Body**
+
+```json
 {
   "title": "Updated Task",
   "description": "Updated description",
   "due_date": "2025-01-05",
   "status": "COMPLETED"
 }
+```
 
 **Response** (200 OK)
+
+```json
 {
   "message": "Task updated successfully"
 }
+```
 
 **Error Responses**
 
-404 Not Found – Task does not exist
+- 404 Not Found – Task does not exist
+- 500 Internal Server Error – Server failure
 
-500 Internal Server Error – Server failure
+---
 
 ### Delete a Task
 
@@ -165,15 +199,30 @@ Updates an existing task by its ID.
 DELETE /api/tasks/{id}
 
 **Description**
+
 Deletes a task by its ID.
 
 **Response** (200 OK)
+
+```json
 {
   "message": "Task deleted successfully"
 }
+```
 
 **Error Responses**
 
-404 Not Found – Task does not exist
+- 404 Not Found – Task does not exist
+- 500 Internal Server Error – Server failure
 
-500 Internal Server Error – Server failure
+---
+
+## Testing
+
+Run the automated tests with:
+
+```bash
+pytest
+```
+
+---
